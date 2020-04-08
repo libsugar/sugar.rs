@@ -6,7 +6,7 @@ macro_rules! _matchand {
     { $p:pat = $e:expr; { } ; $b:block $el:block } => { if let $p = $e $b else $el };
 }
 #[macro_export]
-macro_rules! batch_op {
+macro_rules! bop {
     {} => { };
     { let $($p:pat , $(: $t:ty)? $(= $e:expr)?;)*} => { $(let $p $(: $t)? $(= $e)?;)* };
     { match && $($p:pat = $e:expr),* => $b:block } => {
@@ -16,11 +16,7 @@ macro_rules! batch_op {
     { $x:expr $(=>$($t:tt$(:)?)?)? } => { $x };
     { $x:expr => || : $($op:tt $a:expr),* } => { $($x $op $a)||* };
     { $x:expr => && : $($op:tt $a:expr),* } => { $($x $op $a)&&* };
-    { $x:ident => let : $($op:tt $a:expr),* } => { $($x = $x $op $a);* };
-}
-#[macro_export]
-macro_rules! bop {
-    { $($t:tt)* } => { batch_op!($($t)*) }
+    { $x:ident => = : $($op:tt $a:expr),* } => { $($x = $x $op $a);* };
 }
 
 #[cfg(test)]
@@ -32,7 +28,7 @@ mod tests {
         assert!(x);
 
         let mut a = 1;
-        bop!(a => let : + 1, + 2, + 3);
+        bop!(a => = : + 1, + 2, + 3);
         assert_eq!(a, 7);
     }
 
