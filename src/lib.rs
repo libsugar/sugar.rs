@@ -151,6 +151,26 @@
 //!     ```rust
 //!     let c = r.has(&1) && r.has(&2);
 //!     ```
+//! - `Using`
+//!   ```rust
+//!   let v = (1, 2);
+//!   let v2 = (3, 4);
+//!   using!((a, b) = v, (c, d) = v2; {
+//!     println!("{} {} {} {}", a, b, c, d)
+//!   })
+//!   ```
+//!   *equivalent to*
+//!   ```rust
+//!   let v = (1, 2);
+//!   let v2 = (3, 4);
+//!   {
+//!     let (a, b) = v;
+//!     let (c, d) = v2;
+//!     {
+//!       println!("{} {} {} {}", a, b, c, d)
+//!     }
+//!   }
+//!   ```
 
 macro_rules! _matchand {
     { ; $b:block $($el:block)? } => { $b };
@@ -281,8 +301,9 @@ mod tests {
     #[test]
     fn test_using() {
         let v = (1, 2);
-        using!((a, b) = v ; {
-            println!("some {} {}", a, b)
+        let v2 = (3, 4);
+        using!((a, b) = v, (c, d) = v2 ; {
+            println!("{} {} {} {}", a, b, c, d)
         })
     }
 }

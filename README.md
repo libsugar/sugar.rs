@@ -152,3 +152,23 @@ batch_oper provides some batch operation macro for some operations
     ```rust
     let c = r.has(&1) && r.has(&2);
     ```
+- `Using`
+  ```rust
+  let v = (1, 2);
+  let v2 = (3, 4);
+  using!((a, b) = v, (c, d) = v2; {
+    println!("{} {} {} {}", a, b, c, d)
+  })
+  ```
+  *equivalent to*
+  ```rust
+  let v = (1, 2);
+  let v2 = (3, 4);
+  {
+    let (a, b) = v;
+    let (c, d) = v2;
+    {
+      println!("{} {} {} {}", a, b, c, d)
+    }
+  }
+  ```
