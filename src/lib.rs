@@ -111,7 +111,7 @@
 //!     ```
 //!   - `!loop bool`
 //!     ```rust
-//!     let _: bool = bop!(!loop match && Some(va) = a, Some(vb) = b => {
+//!     let _: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
 //!         1
 //!     } else {
 //!         2
@@ -295,7 +295,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - `!loop bool`
 ///     ```rust
-///     let _: bool = bop!(!loop match && Some(va) = a, Some(vb) = b => {
+///     let _: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
 ///         1
 ///     } else {
 ///         2
@@ -409,6 +409,32 @@ macro_rules! using {
     };
 }
 
+/// Create an implicit variable, perform some side effects, and return it
+/// ## Example
+/// ```rust
+/// let v = 1;
+/// let v = effect(v, |v| { assert_eq!(*v, 1) });
+/// assert_eq!(v, 1);
+/// ```
+#[inline(always)]
+pub fn effect<T>(v: T, mut f: impl FnMut(&T)) -> T {
+    f(&v);
+    v
+}
+/// Create an implicit variable, and make a mapping for it
+/// ## Example
+/// ```rust
+/// let v = 1;
+/// let mut v = using(v, |v| { v + 1 });
+/// assert_eq!(v, 2);
+/// using(&mut v, |v| { *v = 3 });
+/// assert_eq!(v, 3);
+/// ```
+#[inline(always)]
+pub fn using<T, R>(v: T, mut f: impl FnMut(T) -> R) -> R {
+    f(v)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -477,5 +503,16 @@ mod tests {
         using!((a, b) = v, (c, d) = v2 ; {
             println!("{} {} {} {}", a, b, c, d)
         })
+    }
+
+    #[test]
+    fn test_fn() {
+        let v = 1;
+        let v = effect(v, |v| { assert_eq!(*v, 1) });
+        assert_eq!(v, 1);
+        let mut v = using(v, |v| { v + 1 });
+        assert_eq!(v, 2);
+        using(&mut v, |v| { *v = 3 });
+        assert_eq!(v, 3);
     }
 }

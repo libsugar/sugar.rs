@@ -112,7 +112,7 @@ batch_oper provides some batch operation macro for some operations
     ```
   - `!loop bool`
     ```rust
-    let _: bool = bop!(!loop match && Some(va) = a, Some(vb) = b => {
+    let _: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
         1
     } else {
         2
