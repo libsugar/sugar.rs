@@ -40,10 +40,10 @@ batch_oper provides some batch operation macro for some operations
   ```
 - **Let**
   ```rust
-  bop! { let a|u8 = 1, b = 2 }
+  bop! { let a|u8 = 1, mut b = 2 }
   ```
   equivalent to
   ```rust
   let a: u8 = 1;
-  let b = 2;
+  let mut b = 2;
   ```
