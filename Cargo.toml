@@ -1,12 +1,13 @@
 [package]
 name = "batch_oper"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["BatchOperator", "Package <Aditrc@outlook.com>"]
 edition = "2018"
 description = "batch_oper provides some batch operation macro for some operations"
 repository = "https://github.com/BatchOperator/BatchOperRust"
 license = "MIT"
 keywords = ["batch_oper", "macro", "using", "in", "let_chain"]
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
