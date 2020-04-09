@@ -419,7 +419,7 @@ mod tests {
 
         let mut a = 1;
         bop!(= a ; + 1, - 2;!, + 3);
-        assert_eq!(a, 7);
+        assert_eq!(a, 3);
     }
 
     #[test]
