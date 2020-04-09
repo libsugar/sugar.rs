@@ -8,7 +8,11 @@ macro_rules! _matchand {
 #[macro_export]
 macro_rules! bop {
     {} => { };
+
+    // let op
     { let $($p:pat , $(: $t:ty)? $(= $e:expr)?;)*} => { $(let $p $(: $t)? $(= $e)?;)* };
+
+    // if let op
     { match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
         loop { _matchand!( $( $p = $e ; { } )* ; { break $b ; }) ; break $el; }
     };
@@ -21,11 +25,29 @@ macro_rules! bop {
     { !loop bool match && $($p:pat = $e:expr),* => $b:block $(else $el:block)? } => {
         _matchand!( $( $p = $e ; { } )* ; { $b ; true } { $($el ;)? false })
     };
+
+    // base op
     { $x:expr $(=>$(:)?)? } => { $x };
     { $x:expr $(=>$($t:tt$(:)?)?)? } => { $x };
     { $x:expr => || : $($op:tt $a:expr),* } => { $($x $op $a)||* };
     { $x:expr => && : $($op:tt $a:expr),* } => { $($x $op $a)&&* };
     { $x:ident => = : $($op:tt $a:expr),* } => { $($x = $x $op $a);* };
+
+    // inop
+    { $fname:ident ; $($v:expr),* => in && $t:expr } => { $($t.$fname($v))&&* };
+    { $fname:ident ; $($v:expr),* => in || $t:expr } => { $($t.$fname($v))||* };
+    { $fname:ident ; $v:expr => in && $($t:expr),* } => { $($t.$fname($v))&&* };
+    { $fname:ident ; $v:expr => in || $($t:expr),* } => { $($t.$fname($v))||* };
+
+    { $($fname:ident ;)? => in && $t:expr  } => { false };
+    { $($fname:ident ;)? => in || $t:expr  } => { false };
+    { $($fname:ident ;)? $v:expr => in && } => { false };
+    { $($fname:ident ;)? $v:expr => in || } => { false };
+
+    { $($v:expr),* => in && $t:expr } => { $($t.contains($v))&&* };
+    { $($v:expr),* => in || $t:expr } => { $($t.contains($v))||* };
+    { $v:expr => in && $($t:expr),* } => { $($t.contains($v))&&* };
+    { $v:expr => in || $($t:expr),* } => { $($t.contains($v))||* };
 }
 
 #[macro_export]
@@ -87,6 +109,13 @@ mod tests {
         } else {
             2
         });
+    }
+
+    #[test]
+    fn test_in() {
+        let r = 0..5;
+        let c = bop!(&1, &2 => in && r);
+        assert!(c);
     }
 
     #[test]
