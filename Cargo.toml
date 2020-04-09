@@ -6,7 +6,7 @@ edition = "2018"
 description = "batch_oper provides some batch operation macro for some operations"
 repository = "https://github.com/BatchOperator/BatchOperRust"
 license = "MIT"
-keywords = ["batch_oper", "batch", "oper", "operator", "macro", "using", "in", "let_chain", "let", "chain"]
+keywords = ["batch_oper", "macro", "using", "in", "let_chain"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
