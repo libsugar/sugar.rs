@@ -37,7 +37,15 @@
 //!   a = 2 - a;
 //!   a = a * 3;
 //!   ```
-
+//! - **Let**
+//!   ```rust
+//!   bop! { let a|u8 = 1, b = 2 }
+//!   ```
+//!   equivalent to
+//!   ```rust
+//!   let a: u8 = 1;
+//!   let b = 2;
+//!   ```
 
 macro_rules! _matchand {
     { ; $b:block $($el:block)? } => { $b };
@@ -55,7 +63,7 @@ macro_rules! bop {
     {} => { };
 
     // let op
-    { let $($p:pat , $(: $t:ty)? $(= $e:expr)?;)*} => { $(let $p $(: $t)? $(= $e)?;)* };
+    { let $($p:pat $(| $t:ty)? $(= $e:expr)?),*} => { $(let $p $(: $t)? $(= $e)?;)* };
 
     // if let op
     { match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
@@ -119,7 +127,7 @@ mod tests {
 
     #[test]
     fn test_let() {
-        bop! {let a, = 1; b, = 2;}
+        bop! { let a |u8 = 1, b = 2 }
         assert_eq!(a, 1);
         assert_eq!(b, 2);
     }
