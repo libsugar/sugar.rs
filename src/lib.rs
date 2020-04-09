@@ -9,17 +9,17 @@ macro_rules! _matchand {
 macro_rules! bop {
     {} => { };
     { let $($p:pat , $(: $t:ty)? $(= $e:expr)?;)*} => { $(let $p $(: $t)? $(= $e)?;)* };
-    { match && $($p:pat = $e:expr),* => $b:block $(else $el:block)? } => {
-        _matchand!( $( $p = $e ; { } )* ; { $b ; true } { $($el ;)? false });
+    { match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
+        loop { _matchand!( $( $p = $e ; { } )* ; { break $b ; }) ; break $el; }
     };
-    { -> $t:ty ; match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
-        { let retv: $t;  { retv = _matchand!( $( $p = $e ; { } )* ; { $b; } { $el; }) }; retv }
+    { bool match && $($p:pat = $e:expr),* => $b:block $(else $el:block)? } => {
+        loop { _matchand!( $( $p = $e ; { } )* ; { $b ; break true; }) ; $($el ;)? break false; }
     };
-    { || -> $t:ty ; match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
-        || -> $t { _matchand!( $( $p = $e ; { } )* ; { return $b; }) ; return $el; } ()
+    { !loop match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
+        _matchand!( $( $p = $e ; { } )* ; { $b } { $el })
     };
-    { move || -> $t:ty ; match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
-        move || -> $t { _matchand!( $( $p = $e ; { } )* ; { return $b; }) ; return $el; } ()
+    { !loop bool match && $($p:pat = $e:expr),* => $b:block $(else $el:block)? } => {
+        _matchand!( $( $p = $e ; { } )* ; { $b ; true } { $($el ;)? false })
     };
     { $x:expr $(=>$(:)?)? } => { $x };
     { $x:expr $(=>$($t:tt$(:)?)?)? } => { $x };
@@ -59,10 +59,33 @@ mod tests {
     fn test_match() {
         let a = Some(1);
         let b = Some(2);
-        bop!(|| -> () ; match && Some(va) = a, Some(vb) = b => {
-            println!("some {:?} {:?}", va, vb)
-        } else {
 
+        let _: i32 = bop!(match && Some(va) = a, Some(vb) = b => {
+            println!("some {:?} {:?}", va, vb);
+            1
+        } else {
+            2
+        });
+
+        let _: bool = bop!(bool match && Some(va) = a, Some(vb) = b => {
+            println!("some {:?} {:?}", va, vb);
+            1
+        } else {
+            2
+        });
+
+        let _: i32 = bop!(!loop match && Some(va) = a, Some(vb) = b => {
+            println!("some {:?} {:?}", va, vb);
+            1
+        } else {
+            2
+        });
+
+        let _: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
+            println!("some {:?} {:?}", va, vb);
+            1
+        } else {
+            2
         });
     }
 
