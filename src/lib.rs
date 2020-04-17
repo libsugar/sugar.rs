@@ -172,6 +172,8 @@
 //!   }
 //!   ```
 
+#[doc(hidden)]
+#[macro_export]
 macro_rules! _matchand {
     { ; $b:block $($el:block)? } => { $b };
     { $p:pat = $e:expr; { } $($pp:pat = $ee:expr; { })+ ; $b:block $($el:block)?} => {
@@ -179,6 +181,8 @@ macro_rules! _matchand {
     };
     { $p:pat = $e:expr; { } ; $b:block $($el:block)? } => { if let $p = $e $b $(else $el)? };
 }
+#[doc(hidden)]
+#[macro_export]
 macro_rules! _select_op {
     { $x:expr ; $op:tt $a:expr } => { $x $op $a };
     { $x:expr ; $op:tt $a:expr ; !  } => { $a $op $x };
@@ -335,7 +339,7 @@ macro_rules! _select_op {
 ///     ```rust
 ///     let c = r.has(&1) && r.has(&2);
 ///     ```
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! bop {
     {} => { };
 
@@ -402,7 +406,7 @@ macro_rules! bop {
 ///   }
 /// }
 /// ```
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! using {
     { $($p:pat = $v:expr),* ; $b:block } => {
         { $(let $p = $v ;)* $b }
