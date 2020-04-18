@@ -347,11 +347,11 @@ macro_rules! bop {
     { let $($p:pat $(| $t:ty)? $(= $e:expr)?),*} => { $(let $p $(: $t)? $(= $e)?;)* };
 
     // if let op
-    { match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
-        loop { _matchand!( $( $p = $e ; { } )* ; { break $b ; }) ; break $el; }
+    { $($l:lifetime :)? match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
+        $($l :)? loop { _matchand!( $( $p = $e ; { } )* ; { break $($l)? $b ; }) ; break $($l)? $el; }
     };
-    { bool match && $($p:pat = $e:expr),* => $b:block $(else $el:block)? } => {
-        loop { _matchand!( $( $p = $e ; { } )* ; { $b ; break true; }) ; $($el ;)? break false; }
+    { bool $($l:lifetime :)? match && $($p:pat = $e:expr),* => $b:block $(else $el:block)? } => {
+        $($l :)? loop { _matchand!( $( $p = $e ; { } )* ; { $b ; break $($l)? true; }) ; $($el ;)? break $($l)? false; }
     };
     { !loop match && $($p:pat = $e:expr),* => $b:block else $el:block } => {
         _matchand!( $( $p = $e ; { } )* ; { $b } { $el })
@@ -464,14 +464,14 @@ mod tests {
         let a = Some(1);
         let b = Some(2);
 
-        let _: i32 = bop!(match && Some(va) = a, Some(vb) = b => {
+        let _: i32 = bop!('a: match && Some(va) = a, Some(vb) = b => {
             println!("some {} {}", va, vb);
             1
         } else {
             2
         });
 
-        let _: bool = bop!(bool match && Some(va) = a, Some(vb) = b => {
+        let _: bool = bop!(bool 'b: match && Some(va) = a, Some(vb) = b => {
             println!("some {} {}", va, vb);
             1
         } else {
