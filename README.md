@@ -1,4 +1,5 @@
 # batch_oper
+![Rust](https://github.com/BatchOperator/BatchOperRust/workflows/Rust/badge.svg)  
 batch_oper provides some batch operation macro for some operations
 ## Usage
 - **Basic**  
