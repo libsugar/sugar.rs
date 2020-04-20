@@ -1,6 +1,6 @@
 [package]
 name = "batch_oper"
-version = "1.2.0"
+version = "1.2.1"
 authors = ["BatchOperator", "Package <Aditrc@outlook.com>"]
 edition = "2018"
 description = "batch_oper provides some batch operation macro for some operations"
