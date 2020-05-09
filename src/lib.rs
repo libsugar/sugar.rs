@@ -9,8 +9,10 @@
 //!     # assert!(v);
 //!     ```
 //!     *equivalent to*
-//!     ```ignore
-//!     4 == 2 || 4 > 3
+//!     ```rust
+//!     # let v =
+//!     4 == 2 || 4 > 3;
+//!     # assert!(v);
 //!     ```
 //!   - batch `&&`  
 //!     ```rust
@@ -20,8 +22,10 @@
 //!     # assert!(!v);
 //!     ```
 //!     *equivalent to*
-//!     ```ignore
-//!     4 == 2 && 4 > 3
+//!     ```rust
+//!     # let v =
+//!     4 == 2 && 4 > 3;
+//!     # assert!(!v);
 //!     ```
 //!   - `!`
 //!     ```rust
@@ -37,6 +41,19 @@
 //!     # let v =
 //!     1 == a || a == 2
 //!     # ;
+//!     # assert!(v);
+//!     ```
+//!   - batch op
+//!     ```rust
+//!     # use batch_oper::*;
+//!     # let v =
+//!     bop!(&& 5; > ; 2, 3, 6;!);
+//!     # assert!(v);
+//!     ```
+//!     *equivalent to*
+//!     ```rust
+//!     # let v =
+//!     5 > 2 || 5 > 3 || 6 > 5;
 //!     # assert!(v);
 //!     ```
 //! - **Set**
@@ -255,8 +272,10 @@ macro_rules! _select_op {
 ///     # assert!(v);
 ///     ```
 ///     *equivalent to*
-///     ```ignore
-///     4 == 2 || 4 > 3
+///     ```rust
+///     # let v =
+///     4 == 2 || 4 > 3;
+///     # assert!(v);
 ///     ```
 ///   - batch `&&`
 ///     ```rust
@@ -266,8 +285,10 @@ macro_rules! _select_op {
 ///     # assert!(!v);
 ///     ```
 ///     *equivalent to*
-///     ```ignore
-///     4 == 2 && 4 > 3
+///     ```rust
+///     # let v =
+///     4 == 2 && 4 > 3;
+///     # assert!(v);
 ///     ```
 ///   - `!`
 ///     ```rust
@@ -283,6 +304,19 @@ macro_rules! _select_op {
 ///     # let v =
 ///     1 == a || a == 2
 ///     # ;
+///     # assert!(v);
+///     ```
+///   - batch op
+///     ```rust
+///     # use batch_oper::*;
+///     # let v =
+///     bop!(&& 5; > ; 2, 3, 6;!);
+///     # assert!(v);
+///     ```
+///     *equivalent to*
+///     ```rust
+///     # let v =
+///     5 > 2 || 5 > 3 || 6 > 5;
 ///     # assert!(v);
 ///     ```
 /// - **Set**
@@ -474,10 +508,17 @@ macro_rules! bop {
     { $x:expr $(;)? } => { $x };
     { || $x:expr $(;)? } => { $x };
     { && $x:expr $(;)? } => { $x };
-    { = $x:expr $(;)? } => { $x };
+    { = $x:ident $(;)? } => { };
     { || $x:expr ; $($op:tt $a:expr $(;$n:tt)?),* } => { $(_select_op!($x; $op $a $(;$n)?))||* };
     { && $x:expr ; $($op:tt $a:expr $(;$n:tt)?),* } => { $(_select_op!($x; $op $a $(;$n)?))&&* };
     { = $x:ident ; $($op:tt $a:expr $(;$n:tt)?),* } => { $($x = _select_op!($x; $op $a $(;$n)?));* ; };
+    // batch op
+    { || $x:expr ; $op:tt $(;)? } => { $x };
+    { && $x:expr ; $op:tt $(;)? } => { $x };
+    { = $x:ident ; $op:tt $(;)? } => { };
+    { || $x:expr ; $op:tt ; $($a:expr $(;$n:tt)?),* } => { $(_select_op!($x; $op $a $(;$n)?))||* };
+    { && $x:expr ; $op:tt ; $($a:expr $(;$n:tt)?),* } => { $(_select_op!($x; $op $a $(;$n)?))||* };
+    { = $x:ident ; $op:tt ; $($a:expr $(;$n:tt)?),* } => { $($x = _select_op!($x; $op $a $(;$n)?));* ; };
 
     // inop
     { $fname:ident ; $($v:expr),* => in && $t:expr } => { $($t.$fname($v))&&* };
@@ -568,6 +609,12 @@ mod tests {
         let mut a = 1;
         bop!(= a ; + 1, - 2;!, + 3);
         assert_eq!(a, 3);
+    }
+
+    #[test]
+    fn test_batch() {
+        let x = bop!(|| 1 ; < ; 5, 6, 7, 0;!);
+        assert!(x)
     }
 
     #[test]

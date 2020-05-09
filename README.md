@@ -27,6 +27,14 @@ batch_oper provides some batch operation macro for some operations
     ```rust
     1 == a || a == 2
     ```
+  - batch op
+    ```rust
+    bop!(&& 5; > ; 2, 3, 6;!);
+    ```
+    *equivalent to*
+    ```rust
+    5 > 2 || 5 > 3 || 6 > 5
+    ```
 - **Set**
   ```rust
   let mut a = 1;
