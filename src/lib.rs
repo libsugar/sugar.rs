@@ -288,7 +288,7 @@ macro_rules! _select_op {
 ///     ```rust
 ///     # let v =
 ///     4 == 2 && 4 > 3;
-///     # assert!(v);
+///     # assert!(!v);
 ///     ```
 ///   - `!`
 ///     ```rust
