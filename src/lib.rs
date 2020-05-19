@@ -579,7 +579,7 @@ macro_rules! using {
 /// assert_eq!(v, 1);
 /// ```
 #[inline(always)]
-pub fn effect<T>(v: T, mut f: impl FnMut(&T)) -> T {
+pub fn effect<T>(v: T, f: impl FnOnce(&T)) -> T {
     f(&v);
     v
 }
@@ -594,7 +594,7 @@ pub fn effect<T>(v: T, mut f: impl FnMut(&T)) -> T {
 /// assert_eq!(v, 3);
 /// ```
 #[inline(always)]
-pub fn using<T, R>(v: T, mut f: impl FnMut(T) -> R) -> R {
+pub fn using<T, R>(v: T, f: impl FnOnce(T) -> R) -> R {
     f(v)
 }
 
