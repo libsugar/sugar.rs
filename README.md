@@ -33,7 +33,7 @@ batch_oper provides some batch operation macro for some operations
     ```
     *equivalent to*
     ```rust
-    5 > 2 || 5 > 3 || 6 > 5
+    5 > 2 && 5 > 3 && 6 > 5
     ```
 - **Set**
   ```rust
