@@ -247,7 +247,6 @@
 //!   }
 //!   ```
 //!
-//! ***More see [https://docs.rs/batch_oper/](https://docs.rs/batch_oper/)***
 
 #[doc(hidden)]
 #[macro_export]
@@ -264,6 +263,7 @@ macro_rules! _select_op {
     { $x:expr ; $op:tt $a:expr } => { $x $op $a };
     { $x:expr ; $op:tt $a:expr ; !  } => { $a $op $x };
 }
+/// batch opers
 /// ## Usage
 /// - **Basic**
 ///   - batch `||`
@@ -539,6 +539,7 @@ macro_rules! bop {
     { $v:expr => in || $($t:expr),* } => { $($t.contains($v))||* };
 }
 
+/// using
 /// ## Usage
 /// ```rust
 /// # use batch_oper::*;

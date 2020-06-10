@@ -181,3 +181,5 @@ batch_oper provides some batch operation macro for some operations
     }
   }
   ```
+  
+***More see [https://docs.rs/batch_oper/](https://docs.rs/batch_oper/)***
