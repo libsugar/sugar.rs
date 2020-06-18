@@ -148,3 +148,36 @@ impl IntoDuration for u64 {
         core::time::Duration::from_nanos(self)
     }
 }
+
+pub trait ToOk<E: Default> {
+    type T;
+    fn to_ok(self) -> Result<Self::T, E>;
+}
+impl<T, E: Default> ToOk<E> for Option<T> {
+    type T = T;
+
+    #[inline(always)]
+    fn to_ok(self) -> Result<Self::T, E> {
+        match self {
+            Some(v) => Ok(v),
+            None => Err(Default::default()),
+        }
+    }
+}
+
+pub trait ToErr<T: Default> {
+    type E;
+    fn to_err(self) -> Result<T, Self::E>;
+}
+impl<T: Default, E> ToErr<T> for Option<E> {
+    type E = E;
+
+    #[inline(always)]
+    fn to_err(self) -> Result<T, Self::E> {
+        match self {
+            Some(v) => Err(v),
+            None => Ok(Default::default()),
+        }
+    }
+}
+
