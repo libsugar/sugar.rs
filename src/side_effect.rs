@@ -68,6 +68,7 @@ pub fn using<T, R>(v: T, f: impl FnOnce(T) -> R) -> R {
 /// let v = v.effect(|v| { assert_eq!(*v, 1) });
 /// assert_eq!(v, Some(1));
 /// ```
+#[deprecated = "Wait HKT"]
 pub trait Effect<T> {
     /// Create an implicit variable, perform some side effects, and return it
     /// ## Example
@@ -79,6 +80,7 @@ pub trait Effect<T> {
     /// ```
     fn effect<F: FnOnce(&T)>(self, f: F) -> Self;
 }
+#[allow(deprecated)]
 impl<T> Effect<T> for Option<T> {
     #[inline(always)]
     fn effect<F: FnOnce(&T)>(self, f: F) -> Self {
@@ -88,6 +90,7 @@ impl<T> Effect<T> for Option<T> {
         self
     }
 }
+#[allow(deprecated)]
 impl<T, E> Effect<T> for Result<T, E> {
     #[inline(always)]
     fn effect<F: FnOnce(&T)>(self, f: F) -> Self {
@@ -97,10 +100,88 @@ impl<T, E> Effect<T> for Result<T, E> {
         self
     }
 }
+#[allow(deprecated)]
 impl<T, S: core::ops::Deref<Target = T>> Effect<T> for &S {
     #[inline(always)]
     fn effect<F: FnOnce(&T)>(self, f: F) -> Self {
         f(self.deref());
+        self
+    }
+}
+
+/// Create an implicit variable, and make a mapping for it
+/// ## Example
+/// ```rust
+/// # use batch_oper::Used;
+/// let v = 1.used(|v| { v + 1 });
+/// assert_eq!(v, 2);
+/// ```
+pub trait Used: Sized {
+    /// Create an implicit variable, and make a mapping for it
+    /// ## Example
+    /// ```rust
+    /// # use batch_oper::Used;
+    /// let v = 1.used(|v| { v + 1 });
+    /// assert_eq!(v, 2);
+    /// ```
+    fn used<F: FnOnce(Self) -> R, R>(self, f: F) -> R;
+}
+impl<T> Used for T {
+    fn used<F: FnOnce(Self) -> R, R>(self, f: F) -> R {
+        f(self)
+    }
+}
+
+/// Create an implicit variable, do some extra thing, and return it
+/// ## Example
+/// ```rust
+/// # use batch_oper::Extra;
+/// let v = 1.extra(|v| { println!("{}", v) });
+/// assert_eq!(v, 1);
+/// ```
+pub trait Extra: Sized {
+    /// Create an implicit variable, do some extra thing, and return it
+    /// ## Example
+    /// ```rust
+    /// # use batch_oper::Extra;
+    /// let v = 1.extra(|v| { println!("{}", v) });
+    /// assert_eq!(v, 1);
+    /// ```
+    fn extra<F: FnOnce(&Self)>(self, f: F) -> Self;
+}
+impl<T> Extra for T {
+    fn extra<F: FnOnce(&Self)>(self, f: F) -> Self {
+        f(&self);
+        self
+    }
+}
+
+/// Create an implicit variable, do some extra thing, and return it
+/// ## Example
+/// ```rust
+/// # use batch_oper::ExtraMut;
+/// let v = 1.extra_mut(|v| {
+///     println!("{}", v);
+///     *v += 1;
+/// });
+/// assert_eq!(v, 2);
+/// ```
+pub trait ExtraMut: Sized {
+    /// Create an implicit variable, do some extra thing, and return it
+    /// ## Example
+    /// ```rust
+    /// # use batch_oper::ExtraMut;
+    /// let v = 1.extra_mut(|v| {
+    ///     println!("{}", v);
+    ///     *v += 1;
+    /// });
+    /// assert_eq!(v, 2);
+    /// ```
+    fn extra_mut<F: FnOnce(&mut Self)>(self, f: F) -> Self;
+}
+impl<T> ExtraMut for T {
+    fn extra_mut<F: FnOnce(&mut Self)>(mut self, f: F) -> Self {
+        f(&mut self);
         self
     }
 }
