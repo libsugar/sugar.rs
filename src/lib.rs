@@ -548,5 +548,8 @@ pub use macro_lit::*;
 pub mod named_into;
 pub use named_into::*;
 
+pub mod combin;
+pub use combin::*;
+
 #[cfg(test)]
 mod tests;

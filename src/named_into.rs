@@ -1,3 +1,10 @@
+//! Use chained calls to avoid nesting
+//! # Example
+//! ```
+//! # use batch_oper::named_into::*;
+//! assert_eq!(1.some().some(), Some(Some(1)));
+//! ```
+
 macro_rules! named_into  {
     ( $n:ident; $($t:tt)* ) => {
         pub trait $n: Sized {

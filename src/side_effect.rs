@@ -1,3 +1,5 @@
+//! Some extension functions that are convenient for side effects
+
 /// using
 /// ## Usage
 /// ```rust
