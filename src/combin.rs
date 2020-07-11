@@ -6,10 +6,15 @@
 //! # use batch_oper::combin::*;
 //! let a: (i32, u8) = 1.with(2u8);
 //! assert_eq!(a, (1, 2));
+//! 
 //! let b: (i32, u8, f64) = a.with(3f64);
 //! assert_eq!(b, (1, 2, 3.0));
+//! 
 //! let c: (usize, i32, u8, f64) = b.after(0usize);
 //! assert_eq!(c, (0, 1, 2, 3.0));
+//! 
+//! let m: (u8, u8, u8, u8) = (1, 2).with((3, 4));
+//! assert_eq!(m, (1, 2, 3, 4));
 //! ```
 //! 
 //! # Array example
@@ -25,7 +30,7 @@
 //! ```
 //! 
 //! *[With](trait.With.html) is a alias for [Before](trait.Before.html)*
-
+#![allow(unused_macros)]
 /// No nesting combine  
 /// Add at the end  
 pub trait After<T, Output> {
@@ -53,14 +58,14 @@ impl<A: Before<B, O>, B, O> With<B, O> for A {
     }
 }
 
-macro_rules! do_impl_tuple {
+macro_rules! do_impl_tuple_old {
     { } => { };
     { $($t:ident),* } => {
-        do_impl_tuple! { , $($t),* }
-        do_impl_tuple! { ; $($t),* }
+        do_impl_tuple_old! { , $($t),* }
+        do_impl_tuple_old! { ; $($t),* }
     };
     { , $h:ident $(, $($t:ident),*)? } => {
-        do_impl_tuple! { $($($t),*)? }
+        do_impl_tuple_old! { $($($t),*)? }
     };
     { ; $($t:ident),* } => {
         #[allow(non_camel_case_types)]
@@ -85,9 +90,69 @@ macro_rules! do_impl_tuple {
         }
     };
 }
+do_impl_tuple_old! {
+    Z, Y, X, W, V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A,
+    z, y, x, w, v, u, t, s, r, q, p, o, n, m, l, k, j, i, h, g, f, e, d, c, b, a
+}
+
+macro_rules! do_impl_tuple {
+    { $($o:ident),* ; $h:ident } => { };
+    { ; $($s:ident),* } => { };
+    { $($o:ident),* ; $($s:ident),* } => { 
+        do_impl_tuple_loop!{ $($o),* ; $($s),* }
+        do_impl_tuple_loop_2!{ $($o),* ; $($s),* }
+        do_impl_tuple_impl!{ $($o),* ; $($s),* }
+    };
+}
+macro_rules! do_impl_tuple_loop {
+    { $h:ident $(, $($o:ident),*)? ; $($s:ident),* } => {
+        do_impl_tuple!{ $($($o),*)? ; $($s),* }
+    };
+}
+macro_rules! do_impl_tuple_2 {
+    { $($o:ident),* ; $h:ident } => { };
+    { ; $($s:ident),* } => { };
+    { $($o:ident),* ; $($s:ident),* } => { 
+        do_impl_tuple_loop_2!{ $($o),* ; $($s),* }
+        do_impl_tuple_impl!{ $($o),* ; $($s),* }
+    };
+}
+macro_rules! do_impl_tuple_loop_2 {
+    { $($o:ident),* ; $h:ident $(, $($s:ident),*)? } => { 
+        do_impl_tuple_2!{ $($o),* ; $($($s),*)? }
+    };
+}
+macro_rules! do_impl_tuple_impl {
+    { $($t:ident),* ; $($s:ident),* } => { 
+        #[allow(non_camel_case_types)]
+        #[allow(unused_parens)]
+        #[allow(non_snake_case)]
+        impl<$($t),*, $($s),*> After<($($s),*), ($($s),*, $($t),*)> for ($($t),*) {
+            #[inline(always)]
+            fn after(self, v: ($($s),*)) -> ($($s),*, $($t),*) {
+                let ($($t),*) = self;
+                let ($($s),*) = v;
+                ($($s),*, $($t),*)
+            }
+        }
+        #[allow(non_camel_case_types)]
+        #[allow(unused_parens)]
+        #[allow(non_snake_case)]
+        impl<$($t),*, $($s),*> Before<($($s),*), ($($t),*, $($s),*)> for ($($t),*) {
+            #[inline(always)]
+            fn before(self, v: ($($s),*)) -> ($($t),*, $($s),*) {
+                let ($($t),*) = self;
+                let ($($s),*) = v;
+                ($($t),*, $($s),*)
+            }
+        }
+    };
+}
 do_impl_tuple! {
-    z, y, x, w, v, u, t, s, r, q, p, o, n, m, l, k, j, i, h, g, f, e, d, c, b, a,
-    Z, Y, X, W, V, U, T, S, R, Q, P, O, N, M, L, K, J, I, H, G, F, E, D, C, B, A
+    F, E, D, C, B, A,
+    z, y, x, w, v, u, t, s, r, q, p, o, n, m, l, k, j, i, h, g, f, e, d, c, b, a;
+    TF, TE, TD, TC, TB, TA,
+    Tz, Ty, Tx, Tw, Tv, Tu, Tt, Ts, Tr, Tq, Tp, To, Tn, Tm, Tl, Tk, Tj, Ti, Th, Tg, Tf, Te, Td, Tc, Tb, Ta
 }
 
 macro_rules! do_impl_array {
@@ -150,6 +215,14 @@ mod tests {
         assert_eq!(b, (1, 2, 3.0));
         let c: (usize, i32, u8, f64) = b.after(0usize);
         assert_eq!(c, (0, 1, 2, 3.0));
+    }
+
+    #[test]
+    fn test_combin_tuple_m() {
+        let a: (u8, u8, u8, u8) = (1, 2).with((3, 4));
+        assert_eq!(a, (1, 2, 3, 4));
+        let b: (u8, u8, u8, u8) = (3, 4).after((1, 2));
+        assert_eq!(b, (1, 2, 3, 4));
     }
 
     #[test]
