@@ -539,16 +539,24 @@ macro_rules! bop {
     { $v:expr => in || $($t:expr),* } => { $($t.contains($v))||* };
 }
 
+#[cfg(feature = "side-effect")]
 pub mod side_effect;
+#[cfg(all(feature = "side-effect", feature = "re-exports"))]
 pub use side_effect::*;
 
+#[cfg(feature = "macro-lit")]
 mod macro_lit;
+#[cfg(all(feature = "macro-lit", feature = "re-exports"))]
 pub use macro_lit::*;
 
+#[cfg(feature = "named-into")]
 pub mod named_into;
+#[cfg(all(feature = "named-into", feature = "re-exports"))]
 pub use named_into::*;
 
+#[cfg(feature = "combin")]
 pub mod combin;
+#[cfg(all(feature = "combin", feature = "re-exports"))]
 pub use combin::*;
 
 #[cfg(test)]

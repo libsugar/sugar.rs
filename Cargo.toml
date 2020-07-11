@@ -15,5 +15,11 @@ readme = "README.md"
 [dependencies]
 
 [features]
-default = ["std"]
+default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports"]
 std = []
+combin = []
+combin-mutual = []
+named-into = []
+macro-lit = []
+re-exports = []
+side-effect = []
