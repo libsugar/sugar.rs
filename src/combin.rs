@@ -12,7 +12,8 @@
 //!
 //! let c: (usize, i32, u8, f64) = b.after(0usize);
 //! assert_eq!(c, (0, 1, 2, 3.0));
-//!
+//! ```
+//! ```ignore
 //! // feature = "combin-mutual"
 //! let m: (u8, u8, u8, u8) = (1, 2).with((3, 4));
 //! assert_eq!(m, (1, 2, 3, 4));
@@ -30,7 +31,8 @@
 //! 
 //! let c: [u8; 4] = b.after(0);
 //! assert_eq!(c, [0, 1, 2, 3]);
-//!
+//! ```
+//! ```ignore
 //! // feature = "combin-mutual"
 //! let m: [u8; 4] = [1, 2].with([3, 4]);
 //! assert_eq!(m, [1, 2, 3, 4]);
