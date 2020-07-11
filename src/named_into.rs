@@ -5,6 +5,9 @@
 //! assert_eq!(1.some().some(), Some(Some(1)));
 //! ```
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 macro_rules! named_into  {
     ( $n:ident; $($t:tt)* ) => {
         pub trait $n: Sized {
@@ -14,6 +17,8 @@ macro_rules! named_into  {
     };
 }
 
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
 named_into! { IntoBox;
     #[inline(always)]
     fn boxed(self) -> Box<Self> {
@@ -41,34 +46,49 @@ named_into! { IntoUnsafeCell;
 }
 
 #[cfg(feature = "std")]
+use std::rc::Rc;
+#[cfg(not(feature = "std"))]
+use alloc::rc::Rc;
 named_into! { IntoRc;
     #[inline(always)]
-    fn rc(self) -> std::rc::Rc<Self> {
-        std::rc::Rc::new(self)
+    fn rc(self) -> Rc<Self> {
+        Rc::new(self)
     }
     #[inline(always)]
-    fn rc_refcell(self) -> std::rc::Rc<core::cell::RefCell<Self>> {
-        std::rc::Rc::new(core::cell::RefCell::new(self))
+    fn rc_refcell(self) -> Rc<core::cell::RefCell<Self>> {
+        Rc::new(core::cell::RefCell::new(self))
     }
     #[inline(always)]
-    fn rc_cell(self) -> std::rc::Rc<core::cell::Cell<Self>> {
-        std::rc::Rc::new(core::cell::Cell::new(self))
+    fn rc_cell(self) -> Rc<core::cell::Cell<Self>> {
+        Rc::new(core::cell::Cell::new(self))
     }
 }
 
 #[cfg(feature = "std")]
+use std::sync::Arc;
+#[cfg(not(feature = "std"))]
+use alloc::sync::Arc;
+
+#[cfg(feature = "std")]
 named_into! { IntoArc;
     #[inline(always)]
-    fn arc(self) -> std::sync::Arc<Self> {
-        std::sync::Arc::new(self)
+    fn arc(self) -> Arc<Self> {
+        Arc::new(self)
     }
     #[inline(always)]
-    fn arc_mutex(self) -> std::sync::Arc<std::sync::Mutex<Self>> {
-        std::sync::Arc::new(std::sync::Mutex::new(self))
+    fn arc_mutex(self) -> Arc<std::sync::Mutex<Self>> {
+        Arc::new(std::sync::Mutex::new(self))
     }
     #[inline(always)]
-    fn arc_rwlock(self) -> std::sync::Arc<std::sync::RwLock<Self>> {
-        std::sync::Arc::new(std::sync::RwLock::new(self))
+    fn arc_rwlock(self) -> Arc<std::sync::RwLock<Self>> {
+        Arc::new(std::sync::RwLock::new(self))
+    }
+}
+#[cfg(not(feature = "std"))]
+named_into! { IntoArc;
+    #[inline(always)]
+    fn arc(self) -> Arc<Self> {
+        Arc::new(self)
     }
 }
 
@@ -101,11 +121,10 @@ pub trait IntoPin: Sized + core::ops::Deref {
 }
 impl<T: core::ops::Deref> IntoPin for T {}
 
-#[cfg(feature = "std")]
 named_into! { IntoPinArc;
     #[inline(always)]
-    fn pin_arc(self) -> core::pin::Pin<std::sync::Arc<Self>> {
-        std::sync::Arc::pin(self)
+    fn pin_arc(self) -> core::pin::Pin<Arc<Self>> {
+        Arc::pin(self)
     }
 }
 

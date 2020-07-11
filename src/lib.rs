@@ -1,4 +1,6 @@
 //! batch_oper provides some batch operation macro for some operations
+//! ## features
+//! - "side-effect"
 //! ## Usage
 //! - **Basic**  
 //!   - batch `||`  
@@ -247,6 +249,8 @@
 //!   }
 //!   ```
 //!
+
+#![cfg_attr(not(feature = "std"), no_std)]
 
 #[doc(hidden)]
 #[macro_export]

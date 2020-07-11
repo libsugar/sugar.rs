@@ -1,4 +1,5 @@
 use super::*;
+
 #[test]
 fn it_works() {
     let x = bop!(|| 4 ; == 2, > 3);
@@ -22,34 +23,43 @@ fn test_let() {
     assert_eq!(b, 2);
 }
 
+#[allow(unused_variables)]
 #[test]
 fn test_match() {
     let a = Some(1);
     let b = Some(2);
 
     let _: i32 = bop!('a: match && Some(va) = a, Some(vb) = b => {
-        println!("some {} {}", va, vb);
+        #[cfg(feature = "std")] {
+            println!("some {} {}", va, vb);
+        }
         1
     } else {
         2
     });
 
     let _: bool = bop!(bool 'b: match && Some(va) = a, Some(vb) = b => {
-        println!("some {} {}", va, vb);
+        #[cfg(feature = "std")] {
+            println!("some {} {}", va, vb);
+        }
         1
     } else {
         2
     });
 
     let _: i32 = bop!(!loop match && Some(va) = a, Some(vb) = b => {
-        println!("some {} {}", va, vb);
+        #[cfg(feature = "std")] {
+            println!("some {} {}", va, vb);
+        }
         1
     } else {
         2
     });
 
     let _: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
-        println!("some {} {}", va, vb);
+        #[cfg(feature = "std")] {
+            println!("some {} {}", va, vb);
+        }
         1
     } else {
         2
@@ -63,12 +73,15 @@ fn test_in() {
     assert!(c);
 }
 
+#[allow(unused_variables)]
 #[test]
 fn test_using() {
     let v = (1, 2);
     let v2 = (3, 4);
     using!((a, b) = v, (c, d) = v2 ; {
-        println!("{} {} {} {}", a, b, c, d)
+        #[cfg(feature = "std")] {
+            println!("{} {} {} {}", a, b, c, d)
+        }
     })
 }
 
