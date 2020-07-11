@@ -1,6 +1,17 @@
 //! batch_oper provides some batch operation macro for some operations
-//! ## features
-//! - "side-effect"
+//! 
+//! ## Features
+//!
+//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports"]`  
+//!
+//! - `"std"` Enable std  
+//! - `"side-effect"` Enable mod [side_effect](side_effect/index.html)  
+//! - `"named-into"` Enable mod [named_into](named_into/index.html)  
+//! - `"combin"` Enable mod [combin](combin/index.html)  
+//!   - `"combin-mutual"` Enable more advanced implementations but reduce compilation speed  
+//! - `"macro-lit"` Enable macro like [new](macro.new.html), [list](macro.list.html)  
+//! - `"re-exports"` Enable re-export of all mods  
+//! 
 //! ## Usage
 //! - **Basic**  
 //!   - batch `||`  
@@ -550,7 +561,7 @@ pub use side_effect::*;
 
 #[cfg(feature = "macro-lit")]
 mod macro_lit;
-#[cfg(all(feature = "macro-lit", feature = "re-exports"))]
+#[cfg(feature = "macro-lit")]
 pub use macro_lit::*;
 
 #[cfg(feature = "named-into")]

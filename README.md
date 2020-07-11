@@ -1,6 +1,10 @@
 # batch_oper
 ![Rust](https://github.com/BatchOperator/BatchOperRust/workflows/Rust/badge.svg)  
-batch_oper provides some batch operation macro for some operations
+batch_oper provides some batch operation macro for some operations  
+
+***See [https://docs.rs/batch_oper/](https://docs.rs/batch_oper/)***  
+***here is just a brief introduction***  
+
 ## Usage
 - **Basic**  
   - batch `||`  
@@ -181,5 +185,3 @@ batch_oper provides some batch operation macro for some operations
     }
   }
   ```
-  
-***More see [https://docs.rs/batch_oper/](https://docs.rs/batch_oper/)***
