@@ -4,7 +4,7 @@ use std::fmt::Display;
 pub trait Todo {
     #[inline]
     /// Chain call version of `todo!()`
-    fn todo(&self) {
+    fn todo(&self) -> ! {
         todo!()
     }
 }
@@ -14,7 +14,7 @@ impl<T> Todo for T {}
 pub trait TodoMsg {
     #[inline]
     /// Chain call version of `todo!(msg)`
-    fn todo_msg<T: Display>(&self, msg: T) {
+    fn todo_msg<T: Display>(&self, msg: T) -> ! {
         todo!("{}", msg)
     }
 }

@@ -2,7 +2,7 @@
 pub trait Panic: Sized + Sync + Send + 'static {
     #[inline]
     /// Panic Self
-    fn panic(self) {
+    fn panic(self) -> ! {
         panic!(self)
     }
 }
