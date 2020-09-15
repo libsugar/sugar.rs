@@ -2,7 +2,7 @@
 //! 
 //! ## Features
 //!
-//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports"]`  
+//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo"]`  
 //!
 //! - `"std"` Enable std  
 //! - `"side-effect"` Enable mod [side_effect](side_effect/index.html)  
@@ -10,6 +10,8 @@
 //! - `"combin"` Enable mod [combin](combin/index.html)  
 //!   - `"combin-mutual"` Enable more advanced implementations but reduce compilation speed  
 //! - `"macro-lit"` Enable macro like [new](macro.new.html), [list](macro.list.html)  
+//! - `"chain_panic"` Enable mod [chain_panic](chain_panic/index.html)
+//! - `"chain_todo"` Enable mod [chain_todo](chain_todo/index.html)
 //! - `"re-exports"` Enable re-export of all mods  
 //! 
 //! ## Usage
@@ -573,6 +575,16 @@ pub use named_into::*;
 pub mod combin;
 #[cfg(all(feature = "combin", feature = "re-exports"))]
 pub use combin::*;
+
+#[cfg(feature = "chain_panic")]
+pub mod chain_panic;
+#[cfg(all(feature = "chain_panic", feature = "re-exports"))]
+pub use chain_panic::*;
+
+#[cfg(feature = "chain_todo")]
+pub mod chain_todo;
+#[cfg(all(feature = "chain_todo", feature = "re-exports"))]
+pub use chain_todo::*;
 
 #[cfg(test)]
 mod tests;
