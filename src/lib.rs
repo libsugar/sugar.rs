@@ -586,5 +586,15 @@ pub mod chain_todo;
 #[cfg(all(feature = "chain_todo", feature = "re-exports"))]
 pub use chain_todo::*;
 
+#[cfg(feature = "tuple_iter")]
+pub mod tuple_iter;
+#[cfg(all(feature = "tuple_iter", feature = "re-exports"))]
+pub use tuple_iter::*;
+
+#[cfg(feature = "tuple_map")]
+pub mod tuple_map;
+#[cfg(all(feature = "tuple_map", feature = "re-exports"))]
+pub use tuple_map::*;
+
 #[cfg(test)]
 mod tests;

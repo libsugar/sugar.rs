@@ -1,7 +1,7 @@
 [package]
 name = "batch_oper"
-version = "1.12.1"
-authors = ["BatchOperator", "Package <Aditrc@outlook.com>"]
+version = "1.13.0"
+authors = ["BatchOperator", "2A5F <u2a5f@outlook.com>"]
 edition = "2018"
 description = "batch_oper provides some batch operation macro for some operations"
 repository = "https://github.com/BatchOperator/BatchOperRust"
@@ -15,7 +15,7 @@ readme = "README.md"
 [dependencies]
 
 [features]
-default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo"]
+default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuple_iter", "tuple_map"]
 std = []
 combin = []
 combin-mutual = []
@@ -25,3 +25,11 @@ re-exports = []
 side-effect = []
 chain_panic = []
 chain_todo = []
+tuple_iter = ["code_gen"]
+tuple_map = ["code_gen"]
+code_gen = ["syn", "quote", "proc-macro2"]
+
+[build-dependencies]
+syn = { version = "1.0", optional = true }
+quote = { version = "1.0", optional = true }
+proc-macro2 = { version = "1.0", optional = true }
