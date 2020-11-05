@@ -2,7 +2,7 @@
 //! 
 //! ## Features
 //!
-//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo"]`  
+//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuple_iter", "tuple_utils"]`  
 //!
 //! - `"std"` Enable std  
 //! - `"side-effect"` Enable mod [side_effect](side_effect/index.html)  
@@ -12,6 +12,8 @@
 //! - `"macro-lit"` Enable macro like [new](macro.new.html), [list](macro.list.html)  
 //! - `"chain_panic"` Enable mod [chain_panic](chain_panic/index.html)
 //! - `"chain_todo"` Enable mod [chain_todo](chain_todo/index.html)
+//! - `"tuple_iter"` Enable mod [tuple_iter](tuple_iter/index.html)
+//! - `"tuple_utils"` Enable mod [tuple_utils](tuple_utils/index.html)
 //! - `"re-exports"` Enable re-export of all mods  
 //! 
 //! ## Usage
@@ -591,10 +593,10 @@ pub mod tuple_iter;
 #[cfg(all(feature = "tuple_iter", feature = "re-exports"))]
 pub use tuple_iter::*;
 
-#[cfg(feature = "tuple_map")]
-pub mod tuple_map;
-#[cfg(all(feature = "tuple_map", feature = "re-exports"))]
-pub use tuple_map::*;
+#[cfg(feature = "tuple_utils")]
+pub mod tuple_utils;
+#[cfg(all(feature = "tuple_utils", feature = "re-exports"))]
+pub use tuple_utils::*;
 
 #[cfg(test)]
 mod tests;

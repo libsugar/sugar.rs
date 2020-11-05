@@ -1,6 +1,8 @@
-use std::mem::MaybeUninit;
-use std::iter::FusedIterator;
-use std::cmp::min;
+//! Implemented iterators for tuples
+
+use core::mem::MaybeUninit;
+use core::iter::FusedIterator;
+use core::cmp::min;
 
 include!(concat!(env!("OUT_DIR"), "/tuple_iter.rs"));
 

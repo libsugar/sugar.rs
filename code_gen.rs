@@ -6,7 +6,7 @@ use syn::LitInt;
 pub fn code_gen(out_dir: OsString) {
     #[cfg(feature = "tuple_iter")]
     gen_tuple_iter(&out_dir);
-    #[cfg(feature = "tuple_map")]
+    #[cfg(feature = "tuple_utils")]
     gen_tuple_map(&out_dir);
 }
 
@@ -208,15 +208,16 @@ fn gen_tuple_iter_size(size: usize) -> TokenStream {
     tks
 }
 
-#[cfg(feature = "tuple_map")]
+#[cfg(feature = "tuple_utils")]
 fn gen_tuple_map(out_dir: &OsString) {
     let items = (2..33usize).into_iter().map(gen_tuple_map_size);
     let tks = quote! { #(#items)* };
     let code = tks.to_string();
-    let dest_path = Path::new(out_dir).join("tuple_map.rs");
+    let dest_path = Path::new(out_dir).join("tuple_utils.rs");
     fs::write(&dest_path, code).unwrap();
 }
 
+#[cfg(feature = "tuple_utils")]
 fn gen_tuple_map_size(size: usize) -> TokenStream {
     let items = if size > 16 { vec![] } else { (0..size).into_iter().map(|n| gen_tuple_map_n_size(size, n)).collect() };
 
@@ -312,6 +313,7 @@ fn gen_tuple_map_size(size: usize) -> TokenStream {
     tks
 }
 
+#[cfg(feature = "tuple_utils")]
 fn gen_tuple_map_n_size(size: usize, n: usize) -> TokenStream {
     let t = format_ident!("T{}", n);
     let map_n_name = format_ident!("Tuple{}Map{}", size, n);

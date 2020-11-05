@@ -15,7 +15,7 @@ readme = "README.md"
 [dependencies]
 
 [features]
-default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuple_iter", "tuple_map"]
+default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuple_iter", "tuple_utils"]
 std = []
 combin = []
 combin-mutual = []
@@ -26,7 +26,7 @@ side-effect = []
 chain_panic = []
 chain_todo = []
 tuple_iter = ["code_gen"]
-tuple_map = ["code_gen"]
+tuple_utils = ["code_gen"]
 code_gen = ["syn", "quote", "proc-macro2"]
 
 [build-dependencies]
