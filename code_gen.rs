@@ -210,7 +210,7 @@ fn gen_tuple_iter_size(size: usize) -> TokenStream {
 
 #[cfg(feature = "tuple_utils")]
 fn gen_tuple_map(out_dir: &OsString) {
-    let items = (2..33usize).into_iter().map(gen_tuple_map_size);
+    let items = (2..5usize).into_iter().map(gen_tuple_map_size);
     let tks = quote! { #(#items)* };
     let code = tks.to_string();
     let dest_path = Path::new(out_dir).join("tuple_utils.rs");
@@ -219,10 +219,17 @@ fn gen_tuple_map(out_dir: &OsString) {
 
 #[cfg(feature = "tuple_utils")]
 fn gen_tuple_map_size(size: usize) -> TokenStream {
-    let items = if size > 16 { vec![] } else { (0..size).into_iter().map(|n| gen_tuple_map_n_size(size, n)).collect() };
+    let size_lit = LitInt::new(size.to_string().as_str(), Span::call_site());
+    let items = if size > 16 {
+        vec![]
+    } else {
+        (0..size)
+            .into_iter()
+            .map(|n| gen_tuple_map_n_size(size, n))
+            .collect()
+    };
 
-    let as_ref_name = format_ident!("Tuple{}AsRef", size);
-    let as_mut_name = format_ident!("Tuple{}AsMut", size);
+    let tuple_name = format_ident!("Tuple{}", size);
     let map_name = format_ident!("Tuple{}Map", size);
 
     let t = format_ident!("T");
@@ -234,15 +241,20 @@ fn gen_tuple_map_size(size: usize) -> TokenStream {
         .into_iter()
         .map(|i| format_ident!("T{}", i))
         .collect::<Vec<_>>();
+    let ants = (0..size)
+        .into_iter()
+        .map(|i| &nts[i])
+        .map(|i| quote! { #i: 'a })
+        .collect::<Vec<_>>();
     let ref_nts = (0..size)
         .into_iter()
         .map(|i| &nts[i])
-        .map(|id| quote! { &#id })
+        .map(|id| quote! { &'a #id })
         .collect::<Vec<_>>();
     let mut_nts = (0..size)
         .into_iter()
         .map(|i| &nts[i])
-        .map(|id| quote! { &mut #id })
+        .map(|id| quote! { &'a mut #id })
         .collect::<Vec<_>>();
 
     let ref_impl = (0..size)
@@ -277,24 +289,28 @@ fn gen_tuple_map_size(size: usize) -> TokenStream {
     let tks = quote! {
         #(#items)*
 
-        #[doc = #ref_doc]
-        pub trait #as_ref_name<#(#nts),*> {
-            #[doc = #ref_doc]
-            fn as_ref(&self) -> (#(#ref_nts),*);
+        impl<T> TupleSame<T> for (#(#ts),*) { }
+
+        impl<#(#nts),*> Tuple for (#(#nts),*) {
+            fn size(&self) -> usize {
+                #size_lit
+            }
         }
-        impl<#(#nts),*> #as_ref_name<#(#nts),*> for (#(#nts),*) {
-            fn as_ref(&self) -> (#(#ref_nts),*) {
+
+        impl<'a, #(#ants),*> TupleAsRef<'a> for (#(#nts),*) {
+            type OutTuple = (#(#ref_nts),*);
+
+            #[doc = #ref_doc]
+            fn as_ref(&'a self) -> Self::OutTuple {
                 (#(#ref_impl),*)
             }
         }
 
-        #[doc = #mut_doc]
-        pub trait #as_mut_name<#(#nts),*> {
+        impl<'a, #(#ants),*> TupleAsMut<'a> for (#(#nts),*) {
+            type OutTuple = (#(#mut_nts),*);
+
             #[doc = #mut_doc]
-            fn as_mut(&mut self) -> (#(#mut_nts),*);
-        }
-        impl<#(#nts),*> #as_mut_name<#(#nts),*> for (#(#nts),*) {
-            fn as_mut(&mut self) -> (#(#mut_nts),*) {
+            fn as_mut(&'a mut self) -> Self::OutTuple {
                 (#(#mut_impl),*)
             }
         }
