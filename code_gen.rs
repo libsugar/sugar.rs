@@ -229,7 +229,6 @@ fn gen_tuple_map_size(size: usize) -> TokenStream {
             .collect()
     };
 
-    let tuple_name = format_ident!("Tuple{}", size);
     let map_name = format_ident!("Tuple{}Map", size);
 
     let t = format_ident!("T");
