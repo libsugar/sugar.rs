@@ -84,14 +84,3 @@ fn test_using() {
         }
     })
 }
-
-#[test]
-fn test_fn() {
-    let v = 1;
-    let v = effect(v, |v| assert_eq!(*v, 1));
-    assert_eq!(v, 1);
-    let mut v = using(v, |v| v + 1);
-    assert_eq!(v, 2);
-    using(&mut v, |v| *v = 3);
-    assert_eq!(v, 3);
-}

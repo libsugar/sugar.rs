@@ -8,12 +8,10 @@
 //! - `"side-effect"` Enable mod [side_effect](side_effect/index.html)  
 //! - `"named-into"` Enable mod [named_into](named_into/index.html)  
 //! - `"combin"` Enable mod [combin](combin/index.html)  
-//!   - `"combin-mutual"` Enable more advanced implementations but reduce compilation speed  
 //! - `"macro-lit"` Enable macro like [new](macro.new.html), [list](macro.list.html)  
 //! - `"chain_panic"` Enable mod [chain_panic](chain_panic/index.html)
 //! - `"chain_todo"` Enable mod [chain_todo](chain_todo/index.html)
-//! - `"tuple_iter"` Enable mod [tuple_iter](tuple_iter/index.html)
-//! - `"tuple_utils"` Enable mod [tuple_utils](tuple_utils/index.html)
+//! - `"tuples"` Enable mod [tuples](tuples/index.html)  
 //! - `"re-exports"` Enable re-export of all mods  
 //! 
 //! ## Usage
@@ -578,9 +576,9 @@ pub mod combin;
 #[cfg(all(feature = "combin", feature = "re-exports"))]
 pub use combin::*;
 
-#[cfg(feature = "chain_panic")]
+#[cfg(all(feature = "chain_panic", feature = "std"))]
 pub mod chain_panic;
-#[cfg(all(feature = "chain_panic", feature = "re-exports"))]
+#[cfg(all(feature = "chain_panic", feature = "std", feature = "re-exports"))]
 pub use chain_panic::*;
 
 #[cfg(feature = "chain_todo")]
@@ -588,15 +586,13 @@ pub mod chain_todo;
 #[cfg(all(feature = "chain_todo", feature = "re-exports"))]
 pub use chain_todo::*;
 
-#[cfg(feature = "tuple_iter")]
-pub mod tuple_iter;
-#[cfg(all(feature = "tuple_iter", feature = "re-exports"))]
-pub use tuple_iter::*;
-
-#[cfg(feature = "tuple_utils")]
-pub mod tuple_utils;
-#[cfg(all(feature = "tuple_utils", feature = "re-exports"))]
-pub use tuple_utils::*;
+#[cfg(feature = "tuples")]
+/// Re-exports from [tuples](https://crates.io/crates/tuples)  
+pub mod tuples {
+    pub use tuples::*;
+}
+#[cfg(all(feature = "tuples", feature = "re-exports"))]
+pub use crate::tuples::*;
 
 #[cfg(test)]
 mod tests;

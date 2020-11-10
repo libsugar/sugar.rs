@@ -1,3 +1,5 @@
+//! Chain Panic
+
 /// Panic Self
 pub trait Panic: Sized + Sync + Send + 'static {
     #[inline]
@@ -10,6 +12,7 @@ impl<T: Sync + Send + 'static> Panic for T {}
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
 
     #[test]

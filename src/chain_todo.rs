@@ -1,4 +1,6 @@
-use std::fmt::Display;
+//! Chain Todo
+
+use core::fmt::Display;
 
 /// Chain call version of `todo!()`
 pub trait Todo {

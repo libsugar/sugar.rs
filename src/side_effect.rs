@@ -34,83 +34,6 @@ macro_rules! using {
     };
 }
 
-/// Create an implicit variable, perform some side effects, and return it
-/// ## Example
-/// ```rust
-/// # use batch_oper::effect;
-/// let v = 1;
-/// let v = effect(v, |v| { assert_eq!(*v, 1) });
-/// assert_eq!(v, 1);
-/// ```
-#[inline(always)]
-pub fn effect<T>(v: T, f: impl FnOnce(&T)) -> T {
-    f(&v);
-    v
-}
-/// Create an implicit variable, and make a mapping for it
-/// ## Example
-/// ```rust
-/// # use batch_oper::using;
-/// let v = 1;
-/// let mut v = using(v, |v| { v + 1 });
-/// assert_eq!(v, 2);
-/// using(&mut v, |v| { *v = 3 });
-/// assert_eq!(v, 3);
-/// ```
-#[inline(always)]
-pub fn using<T, R>(v: T, f: impl FnOnce(T) -> R) -> R {
-    f(v)
-}
-
-/// Create an implicit variable, perform some side effects, and return it
-/// ## Example
-/// ```rust
-/// # use batch_oper::Effect;
-/// let v = Some(1);
-/// let v = v.effect(|v| { assert_eq!(*v, 1) });
-/// assert_eq!(v, Some(1));
-/// ```
-#[deprecated = "Wait HKT"]
-pub trait Effect<T> {
-    /// Create an implicit variable, perform some side effects, and return it
-    /// ## Example
-    /// ```rust
-    /// # use batch_oper::Effect;
-    /// let v = Some(1);
-    /// let v = v.effect(|v| { assert_eq!(*v, 1) });
-    /// assert_eq!(v, Some(1));
-    /// ```
-    fn effect<F: FnOnce(&T)>(self, f: F) -> Self;
-}
-#[allow(deprecated)]
-impl<T> Effect<T> for Option<T> {
-    #[inline(always)]
-    fn effect<F: FnOnce(&T)>(self, f: F) -> Self {
-        if let Some(ref v) = self {
-            f(v);
-        }
-        self
-    }
-}
-#[allow(deprecated)]
-impl<T, E> Effect<T> for Result<T, E> {
-    #[inline(always)]
-    fn effect<F: FnOnce(&T)>(self, f: F) -> Self {
-        if let Ok(ref v) = self {
-            f(v);
-        }
-        self
-    }
-}
-#[allow(deprecated)]
-impl<T, S: core::ops::Deref<Target = T>> Effect<T> for &S {
-    #[inline(always)]
-    fn effect<F: FnOnce(&T)>(self, f: F) -> Self {
-        f(self.deref());
-        self
-    }
-}
-
 /// Create an implicit variable, and make a mapping for it
 /// ## Example
 /// ```rust
@@ -137,22 +60,22 @@ impl<T> Used for T {
 /// Create an implicit variable, do some extra thing, and return it
 /// ## Example
 /// ```rust
-/// # use batch_oper::Extra;
-/// let v = 1.extra(|v| { println!("{}", v) });
+/// # use batch_oper::Also;
+/// let v = 1.also(|v| { println!("{}", v) });
 /// assert_eq!(v, 1);
 /// ```
-pub trait Extra: Sized {
+pub trait Also: Sized {
     /// Create an implicit variable, do some extra thing, and return it
     /// ## Example
     /// ```rust
-    /// # use batch_oper::Extra;
-    /// let v = 1.extra(|v| { println!("{}", v) });
+    /// # use batch_oper::Also;
+    /// let v = 1.also(|v| { println!("{}", v) });
     /// assert_eq!(v, 1);
     /// ```
-    fn extra<F: FnOnce(&Self)>(self, f: F) -> Self;
+    fn also<F: FnOnce(&Self)>(self, f: F) -> Self;
 }
-impl<T> Extra for T {
-    fn extra<F: FnOnce(&Self)>(self, f: F) -> Self {
+impl<T> Also for T {
+    fn also<F: FnOnce(&Self)>(self, f: F) -> Self {
         f(&self);
         self
     }
@@ -161,28 +84,28 @@ impl<T> Extra for T {
 /// Create an implicit variable, do some extra thing, and return it
 /// ## Example
 /// ```rust
-/// # use batch_oper::ExtraMut;
-/// let v = 1.extra_mut(|v| {
+/// # use batch_oper::AlsoMut;
+/// let v = 1.also_mut(|v| {
 ///     println!("{}", v);
 ///     *v += 1;
 /// });
 /// assert_eq!(v, 2);
 /// ```
-pub trait ExtraMut: Sized {
+pub trait AlsoMut: Sized {
     /// Create an implicit variable, do some extra thing, and return it
     /// ## Example
     /// ```rust
-    /// # use batch_oper::ExtraMut;
-    /// let v = 1.extra_mut(|v| {
+    /// # use batch_oper::AlsoMut;
+    /// let v = 1.also_mut(|v| {
     ///     println!("{}", v);
     ///     *v += 1;
     /// });
     /// assert_eq!(v, 2);
     /// ```
-    fn extra_mut<F: FnOnce(&mut Self)>(self, f: F) -> Self;
+    fn also_mut<F: FnOnce(&mut Self)>(self, f: F) -> Self;
 }
-impl<T> ExtraMut for T {
-    fn extra_mut<F: FnOnce(&mut Self)>(mut self, f: F) -> Self {
+impl<T> AlsoMut for T {
+    fn also_mut<F: FnOnce(&mut Self)>(mut self, f: F) -> Self {
         f(&mut self);
         self
     }

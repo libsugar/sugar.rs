@@ -45,10 +45,10 @@ named_into! { IntoUnsafeCell;
     }
 }
 
-#[cfg(feature = "std")]
-use std::rc::Rc;
 #[cfg(not(feature = "std"))]
 use alloc::rc::Rc;
+#[cfg(feature = "std")]
+use std::rc::Rc;
 named_into! { IntoRc;
     #[inline(always)]
     fn rc(self) -> Rc<Self> {
@@ -64,10 +64,10 @@ named_into! { IntoRc;
     }
 }
 
-#[cfg(feature = "std")]
-use std::sync::Arc;
 #[cfg(not(feature = "std"))]
 use alloc::sync::Arc;
+#[cfg(feature = "std")]
+use std::sync::Arc;
 
 #[cfg(feature = "std")]
 named_into! { IntoArc;
@@ -207,3 +207,48 @@ impl<T: Default, E> ToErr<T> for Option<E> {
     }
 }
 
+pub mod fns {
+    use super::*;
+
+    /// Make `Some`
+    #[inline(always)]
+    pub fn some<T>(v: T) -> Option<T> {
+        Some(v)
+    }
+
+    /// Make `None`
+    #[inline(always)]
+    pub fn none<T>(_: T) -> Option<T> {
+        None
+    }
+
+    /// Make `Result`
+    #[inline(always)]
+    pub fn ok<T, E>(v: T) -> Result<T, E> {
+        Ok(v)
+    }
+
+    /// Make `Result`
+    #[inline(always)]
+    pub fn err<T, E>(e: E) -> Result<T, E> {
+        Err(e)
+    }
+
+    /// Make `Box<T>`
+    #[inline(always)]
+    pub fn boxed<T>(v: T) -> Box<T> {
+        Box::new(v)
+    }
+
+    /// Make `Arc<T>`
+    #[inline(always)]
+    pub fn arc<T>(v: T) -> Arc<T> {
+        Arc::new(v)
+    }
+
+    /// Make `Rc<T>`
+    #[inline(always)]
+    pub fn rc<T>(v: T) -> Rc<T> {
+        Rc::new(v)
+    }
+}
