@@ -110,3 +110,9 @@ impl<T> AlsoMut for T {
         self
     }
 }
+
+/// Run function immediately 
+#[inline(always)]
+pub fn run<R>(f: impl FnOnce() -> R) -> R {
+    f()
+}
