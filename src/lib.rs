@@ -12,6 +12,7 @@
 //! - `"chain_panic"` Enable mod [chain_panic](chain_panic/index.html)
 //! - `"chain_todo"` Enable mod [chain_todo](chain_todo/index.html)
 //! - `"tuples"` Enable mod [tuples](tuples/index.html)  
+//! - `"once_get"` Enable mod [once_get](once_get/index.html)  
 //! - `"re-exports"` Enable re-export of all mods  
 //! 
 //! ## Usage
@@ -593,6 +594,11 @@ pub mod tuples {
 }
 #[cfg(all(feature = "tuples", feature = "re-exports"))]
 pub use crate::tuples::*;
+
+#[cfg(feature = "once_get")]
+pub mod once_get;
+#[cfg(all(feature = "once_get", feature = "re-exports"))]
+pub use crate::once_get::*;
 
 #[cfg(test)]
 mod tests;
