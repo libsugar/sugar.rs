@@ -58,7 +58,7 @@ macro_rules! arr {
 macro_rules! deque {
     [] => { std::collections::VecDeque::new() };
     [ $elem:expr; $n:expr ] => { std::collections::VecDeque::from(vec![$elem; $n]) };
-    [ $($e:expr),+ $(,)? ] => { std::collections::VecDeque::from(vec![$($e),+]) };
+    [ $($e:expr),* $(,)? ] => { std::collections::VecDeque::from(vec![$($e),+]) };
 }
 
 /// new a `LinkedList<T>`  
@@ -144,14 +144,14 @@ macro_rules! list {
         }
         l
     }};
-    [ $($e:expr),+ $(,)? ] => {{
+    [ $($e:expr),* $(,)? ] => {{
         let mut l = std::collections::LinkedList::new();
-        $( l.push_back($e); )+
+        $( l.push_back($e); )*
         l
     }};
-    [ <- $($e:expr),+ $(,)? ] => {{
+    [ <- $($e:expr),* $(,)? ] => {{
         let mut l = std::collections::LinkedList::new();
-        $( l.push_front($e); )+
+        $( l.push_front($e); )*
         l
     }};
 }
@@ -179,14 +179,45 @@ macro_rules! list {
 /// }
 /// # ;
 /// ```
+/// ---
+/// map like
+/// ```
+/// # use batch_oper::*;
+/// # use std::collections::*;
+/// # let ka = 1; let va = 2; let kb = 3; let vb = 4;
+/// map! { let BTreeMap::new();
+///     ka => va,
+///     kb => vb,
+/// }
+/// # ;
+/// ```
+/// *equivalent to*
+/// ```
+/// # use std::collections::*;
+/// # let ka = 1; let va = 2; let kb = 3; let vb = 4;
+/// {
+///     let mut m = BTreeMap::new();
+///     m.insert(ka, va);
+///     m.insert(kb, vb);
+///     m
+/// }
+/// # ;
+/// ```
 #[macro_export]
 macro_rules! map {
     { } => { std::collections::HashMap::new() };
-    { $($k:expr => $v:expr),+ $(,)? } => {{
+    { $($k:expr => $v:expr),* $(,)? } => {{
         let mut m = std::collections::HashMap::new();
         $(
             m.insert($k, $v);
-        )+
+        )*
+        m
+    }};
+    { let $m:expr; $($k:expr => $v:expr),* $(,)? } => {{
+        let mut m = $m;
+        $(
+            m.insert($k, $v);
+        )*
         m
     }};
 }
@@ -217,11 +248,11 @@ macro_rules! map {
 #[macro_export]
 macro_rules! btmap {
     { } => { std::collections::BTreeMap::new() };
-    { $($k:expr => $v:expr),+ $(,)? } => {{
+    { $($k:expr => $v:expr),* $(,)? } => {{
         let mut m = std::collections::BTreeMap::new();
         $(
             m.insert($k, $v);
-        )+
+        )*
         m
     }};
 }
@@ -249,10 +280,10 @@ macro_rules! btmap {
 /// ```
 #[macro_export]
 macro_rules! map_append {
-    { $m:expr; $($k:expr => $v:expr),+ $(,)? } => {
+    { $m:expr; $($k:expr => $v:expr),* $(,)? } => {
         $(
             $m.insert($k, $v);
-        )+
+        )*
     };
 }
 
@@ -276,14 +307,42 @@ macro_rules! map_append {
 /// }
 /// # ;
 /// ```
+/// ---
+/// set like
+/// ```
+/// # use batch_oper::*;
+/// # use std::collections::*;
+/// # let a = 1; let b = 2;
+/// set![let BTreeSet::new(); 1, 2]
+/// # ;
+/// ```
+/// *equivalent to*
+/// ```
+/// # use std::collections::*;
+/// # let a = 1; let b = 2;
+/// {
+///     let mut s = BTreeSet::new();
+///     s.insert(a);
+///     s.insert(b);
+///     s
+/// }
+/// # ;
+/// ```
 #[macro_export]
 macro_rules! set {
     { } => { std::collections::HashSet::new() };
-    { $($e:expr),+ $(,)? } => {{
+    { $($e:expr),* $(,)? } => {{
         let mut s = std::collections::HashSet::new();
         $(
             s.insert($e);
-        )+
+        )*
+        s
+    }};
+    { let $s:expr; $($e:expr),* $(,)? } => {{
+        let mut s = $s;
+        $(
+            s.insert($e);
+        )*
         s
     }};
 }
@@ -311,11 +370,11 @@ macro_rules! set {
 #[macro_export]
 macro_rules! btset {
     { } => { std::collections::BTreeSet::new() };
-    { $($e:expr),+ $(,)? } => {{
+    { $($e:expr),* $(,)? } => {{
         let mut s = std::collections::BTreeSet::new();
         $(
             s.insert($e);
-        )+
+        )*
         s
     }};
 }

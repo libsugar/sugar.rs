@@ -84,3 +84,19 @@ fn test_using() {
         }
     })
 }
+
+#[test]
+fn test_macro_map_map_like() {
+    use std::collections::BTreeMap;
+
+    map! { let BTreeMap::new();
+        1 => 2
+    };
+}
+
+#[test]
+fn test_macro_set_set_like() {
+    use std::collections::BTreeSet;
+
+    set![let BTreeSet::new(); 1, 2];
+}
