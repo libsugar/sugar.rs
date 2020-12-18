@@ -1,4 +1,4 @@
-//! batch_oper provides some batch operation macro for some operations
+//! libsugar provides syntactic sugar in the form of a library
 //! 
 //! ## Features
 //!
@@ -14,254 +14,6 @@
 //! - `"tuples"` Enable mod [tuples](tuples/index.html)  
 //! - `"once_get"` Enable mod [once_get](once_get/index.html)  
 //! - `"re-exports"` Enable re-export of all mods  
-//! 
-//! ## Usage
-//! - **Basic**  
-//!   - batch `||`  
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let v =
-//!     bop!(|| 4; == 2, > 3);
-//!     # assert!(v);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let v =
-//!     4 == 2 || 4 > 3;
-//!     # assert!(v);
-//!     ```
-//!   - batch `&&`  
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let v =
-//!     bop!(&& 4; == 2, > 3);
-//!     # assert!(!v);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let v =
-//!     4 == 2 && 4 > 3;
-//!     # assert!(!v);
-//!     ```
-//!   - `!`
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let a = 1;
-//!     # let v =
-//!     bop!(|| a; == 1;!, == 2);
-//!     # assert!(v);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let a = 1;
-//!     # let v =
-//!     1 == a || a == 2
-//!     # ;
-//!     # assert!(v);
-//!     ```
-//!   - batch op
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let v =
-//!     bop!(&& 5; > ; 2, 3, 6;!);
-//!     # assert!(v);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let v =
-//!     5 > 2 && 5 > 3 && 6 > 5;
-//!     # assert!(v);
-//!     ```
-//! - **Set**
-//!   ```rust
-//!   # use batch_oper::*;
-//!   let mut a = 1;
-//!   bop!(= a; + 1, - 2;!, * 3);
-//!   # assert_eq!(a, 0);
-//!   ```
-//!   *equivalent to*
-//!   ```rust
-//!   let mut a = 1;
-//!   a = a + 1;
-//!   a = 2 - a;
-//!   a = a * 3;
-//!   # assert_eq!(a, 0);
-//!   ```
-//! - **Let**
-//!   ```rust
-//!   # use batch_oper::*;
-//!   bop! { let a|u8 = 1, mut b = 2 }
-//!   # assert_eq!(a, 1);
-//!   # assert_eq!(b, 2);
-//!   ```
-//!   *equivalent to*
-//!   ```no_run
-//!   let a: u8 = 1;
-//!   let mut b = 2;
-//!   ```
-//! - **Let chain**
-//!   - basic
-//!     ```rust
-//!     # use batch_oper::*;
-//!     let a = Some(1);
-//!     let b = Some(2);
-//!     
-//!     let v: i32 = bop!(match && Some(va) = a, Some(vb) = b => {
-//!         1
-//!     } else {
-//!         2
-//!     });
-//!     # assert_eq!(v, 1);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     let a = Some(1);
-//!     let b = Some(2);
-//!     
-//!     let v: i32 = loop {
-//!         if let Some(va) = a {
-//!             if let Some(vb) = b {
-//!                 break { 1 };
-//!             }
-//!         }
-//!         break { 2 };
-//!     };
-//!     # assert_eq!(v, 1);
-//!     ```
-//!   - `bool`
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let a = Some(1);
-//!     # let b = Some(2);
-//!     let v: bool = bop!(bool match && Some(va) = a, Some(vb) = b => {
-//!         1
-//!     } else {
-//!         2
-//!     });
-//!     # assert!(v);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let a = Some(1);
-//!     # let b = Some(2);
-//!     let v: bool = loop {
-//!         if let Some(va) = a {
-//!             if let Some(vb) = b {
-//!                 { 1 };
-//!                 break true;
-//!             }
-//!         }
-//!         { 2 };
-//!         break false;
-//!     };
-//!     # assert!(v);
-//!     ```
-//!   - `!loop`
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let a = Some(1);
-//!     # let b = Some(2);
-//!     let v: i32 = bop!(!loop match && Some(va) = a, Some(vb) = b => {
-//!         1
-//!     } else {
-//!         2
-//!     });
-//!     # assert_eq!(v, 1)
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let a = Some(1);
-//!     # let b = Some(2);
-//!     let v: i32 = if let Some(va) = a {
-//!         if let Some(vb) = b {
-//!             { 1 }
-//!         } else { { 2 } }
-//!     } else  { { 2 } };
-//!     # assert_eq!(v, 1);
-//!     ```
-//!   - `!loop bool`
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let a = Some(1);
-//!     # let b = Some(2);
-//!     let v: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
-//!         1
-//!     } else {
-//!         2
-//!     });
-//!     # assert!(v);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let a = Some(1);
-//!     # let b = Some(2);
-//!     let v: bool = if let Some(va) = a {
-//!         if let Some(vb) = b {
-//!             { 1 }; true
-//!         } else { { 2 }; false }
-//!     } else  { { 2 }; false };
-//!     # assert!(v);
-//!     ```
-//! - **In**
-//!   ```rust
-//!   # use batch_oper::*;
-//!   let r = 0..5;
-//!   let c = bop!(&1, &2 => in && r);
-//!   # assert!(c);
-//!   ```
-//!   *equivalent to*
-//!   ```rust
-//!   let r = 0..5;
-//!   let c = r.contains(&1) && r.contains(&2);
-//!   # assert!(c);
-//!   ```
-//!   - `||`
-//!     ```rust
-//!     # use batch_oper::*;
-//!     # let r = 0..5;
-//!     let c = bop!(&1, &2 => in || r);
-//!     # assert!(c);
-//!     ```
-//!     *equivalent to*
-//!     ```rust
-//!     # let r = 0..5;
-//!     let c = r.contains(&1) || r.contains(&2);
-//!     # assert!(c);
-//!     ```
-//!   - custom funcion name
-//!     ```ignore
-//!     let c = bop!(has; &1, &2 => in && r);
-//!     ```
-//!     *equivalent to*
-//!     ```ignore
-//!     let c = r.has(&1) && r.has(&2);
-//!     ```
-//! - `Using`
-//!   ```rust
-//!   # use batch_oper::using;
-//!   let v = (1, 2);
-//!   let v2 = (3, 4);
-//!   using!((a, b) = v, (c, d) = v2; {
-//!     println!("{} {} {} {}", a, b, c, d)
-//!     # ;
-//!     # assert_eq!(a, 1);
-//!     # assert_eq!(b, 2);
-//!     # assert_eq!(c, 3);
-//!     # assert_eq!(d, 4);
-//!   })
-//!   ```
-//!   *equivalent to*
-//!   ```no_run
-//!   let v = (1, 2);
-//!   let v2 = (3, 4);
-//!   {
-//!     let (a, b) = v;
-//!     let (c, d) = v2;
-//!     {
-//!       println!("{} {} {} {}", a, b, c, d)
-//!     }
-//!   }
-//!   ```
 //!
 
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -286,7 +38,7 @@ macro_rules! _select_op {
 /// - **Basic**
 ///   - batch `||`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let v =
 ///     bop!(|| 4; == 2, > 3);
 ///     # assert!(v);
@@ -299,7 +51,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - batch `&&`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let v =
 ///     bop!(&& 4; == 2, > 3);
 ///     # assert!(!v);
@@ -312,7 +64,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - `!`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let a = 1;
 ///     # let v =
 ///     bop!(|| a; == 1;!, == 2);
@@ -328,7 +80,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - batch op
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let v =
 ///     bop!(&& 5; > ; 2, 3, 6;!);
 ///     # assert!(v);
@@ -341,7 +93,7 @@ macro_rules! _select_op {
 ///     ```
 /// - **Set**
 ///   ```rust
-///   # use batch_oper::*;
+///   # use libsugar::*;
 ///   let mut a = 1;
 ///   bop!(= a; + 1, - 2;!, * 3);
 ///   # assert_eq!(a, 0);
@@ -356,7 +108,7 @@ macro_rules! _select_op {
 ///   ```
 /// - **Let**
 ///   ```rust
-///   # use batch_oper::*;
+///   # use libsugar::*;
 ///   bop! { let a|u8 = 1, mut b = 2 }
 ///   # assert_eq!(a, 1);
 ///   # assert_eq!(b, 2);
@@ -369,7 +121,7 @@ macro_rules! _select_op {
 /// - **Let chain**
 ///   - basic
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     let a = Some(1);
 ///     let b = Some(2);
 ///
@@ -397,7 +149,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - `bool`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let a = Some(1);
 ///     # let b = Some(2);
 ///     let v: bool = bop!(bool match && Some(va) = a, Some(vb) = b => {
@@ -425,7 +177,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - `!loop`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let a = Some(1);
 ///     # let b = Some(2);
 ///     let v: i32 = bop!(!loop match && Some(va) = a, Some(vb) = b => {
@@ -448,7 +200,7 @@ macro_rules! _select_op {
 ///     ```
 ///   - `!loop bool`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let a = Some(1);
 ///     # let b = Some(2);
 ///     let v: bool = bop!(!loop bool match && Some(va) = a, Some(vb) = b => {
@@ -471,7 +223,7 @@ macro_rules! _select_op {
 ///     ```
 /// - **In**
 ///   ```rust
-///   # use batch_oper::*;
+///   # use libsugar::*;
 ///   let r = 0..5;
 ///   let c = bop!(&1, &2 => in && r);
 ///   # assert!(c);
@@ -484,7 +236,7 @@ macro_rules! _select_op {
 ///   ```
 ///   - `||`
 ///     ```rust
-///     # use batch_oper::*;
+///     # use libsugar::*;
 ///     # let r = 0..5;
 ///     let c = bop!(&1, &2 => in || r);
 ///     # assert!(c);
@@ -599,6 +351,11 @@ pub use crate::tuples::*;
 pub mod once_get;
 #[cfg(all(feature = "once_get", feature = "re-exports"))]
 pub use crate::once_get::*;
+
+#[cfg(feature = "chain_drop")]
+pub mod chain_drop;
+#[cfg(all(feature = "chain_drop", feature = "re-exports"))]
+pub use chain_drop::*;
 
 #[cfg(test)]
 mod tests;

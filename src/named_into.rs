@@ -1,7 +1,7 @@
 //! Use chained calls to avoid nesting
 //! # Example
 //! ```
-//! # use batch_oper::named_into::*;
+//! # use libsugar::named_into::*;
 //! assert_eq!(1.some().some(), Some(Some(1)));
 //! ```
 

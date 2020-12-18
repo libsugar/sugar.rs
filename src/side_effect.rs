@@ -3,7 +3,7 @@
 /// using
 /// ## Usage
 /// ```rust
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// let v = (1, 2);
 /// let v2 = (3, 4);
 /// using!((a, b) = v, (c, d) = v2; {
@@ -37,7 +37,7 @@ macro_rules! using {
 /// Create an implicit variable, and make a mapping for it
 /// ## Example
 /// ```rust
-/// # use batch_oper::Used;
+/// # use libsugar::Used;
 /// let v = 1.used(|v| { v + 1 });
 /// assert_eq!(v, 2);
 /// ```
@@ -45,7 +45,7 @@ pub trait Used: Sized {
     /// Create an implicit variable, and make a mapping for it
     /// ## Example
     /// ```rust
-    /// # use batch_oper::Used;
+    /// # use libsugar::Used;
     /// let v = 1.used(|v| { v + 1 });
     /// assert_eq!(v, 2);
     /// ```
@@ -60,7 +60,7 @@ impl<T> Used for T {
 /// Create an implicit variable, do some extra thing, and return it
 /// ## Example
 /// ```rust
-/// # use batch_oper::Also;
+/// # use libsugar::Also;
 /// let v = 1.also(|v| { println!("{}", v) });
 /// assert_eq!(v, 1);
 /// ```
@@ -68,7 +68,7 @@ pub trait Also: Sized {
     /// Create an implicit variable, do some extra thing, and return it
     /// ## Example
     /// ```rust
-    /// # use batch_oper::Also;
+    /// # use libsugar::Also;
     /// let v = 1.also(|v| { println!("{}", v) });
     /// assert_eq!(v, 1);
     /// ```
@@ -84,7 +84,7 @@ impl<T> Also for T {
 /// Create an implicit variable, do some extra thing, and return it
 /// ## Example
 /// ```rust
-/// # use batch_oper::AlsoMut;
+/// # use libsugar::AlsoMut;
 /// let v = 1.also_mut(|v| {
 ///     println!("{}", v);
 ///     *v += 1;
@@ -95,7 +95,7 @@ pub trait AlsoMut: Sized {
     /// Create an implicit variable, do some extra thing, and return it
     /// ## Example
     /// ```rust
-    /// # use batch_oper::AlsoMut;
+    /// # use libsugar::AlsoMut;
     /// let v = 1.also_mut(|v| {
     ///     println!("{}", v);
     ///     *v += 1;

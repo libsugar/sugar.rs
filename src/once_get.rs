@@ -1,5 +1,6 @@
+//! Get Once
 //! ```
-//! # use batch_oper::once_get::*;
+//! # use libsugar::once_get::*;
 //! let mut a = None;
 //! let b = a.get_or_init(|| 1);
 //! assert_eq!(*b, 1);

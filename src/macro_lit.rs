@@ -1,6 +1,6 @@
 /// new a `Box<T>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # let xxx = 1;
 /// new!(xxx)
 /// # ;
@@ -23,7 +23,7 @@ macro_rules! new {
 
 /// new a `Box<[T]>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # let a = 1; let b = 2; let c = 3;
 /// arr![a, b, c]
 /// # ;
@@ -41,7 +41,7 @@ macro_rules! arr {
 
 /// new a `VecDeque<T>`
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2; let c = 3;
 /// deque![a, b, c]
@@ -66,7 +66,7 @@ macro_rules! deque {
 /// ----------  
 /// ### Push Back  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2; let c = 3;
 /// list![a, b, c]
@@ -90,7 +90,7 @@ macro_rules! deque {
 /// ----------  
 /// ### Push Front  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2; let c = 3;
 /// list![<- a, b, c]
@@ -114,7 +114,7 @@ macro_rules! deque {
 /// ----------  
 /// ### From Elem  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1;
 /// list![a; 3]
@@ -158,7 +158,7 @@ macro_rules! list {
 
 /// new a `HashMap<K, V>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let ka = 1; let va = 2; let kb = 3; let vb = 4;
 /// map! {
@@ -182,7 +182,7 @@ macro_rules! list {
 /// ---
 /// map like
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let ka = 1; let va = 2; let kb = 3; let vb = 4;
 /// map! { let BTreeMap::new();
@@ -224,7 +224,7 @@ macro_rules! map {
 
 /// new a `BTreeMap<K, V>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let ka = 1; let va = 2; let kb = 3; let vb = 4;
 /// btmap! {
@@ -259,7 +259,7 @@ macro_rules! btmap {
 
 /// append items to a map  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let ka = 1; let va = 2; let kb = 3; let vb = 4;
 /// let mut m = HashMap::new();
@@ -289,7 +289,7 @@ macro_rules! map_append {
 
 /// new a `HashSet<V>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2;
 /// set![a, b]
@@ -310,7 +310,7 @@ macro_rules! map_append {
 /// ---
 /// set like
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2;
 /// set![let BTreeSet::new(); 1, 2]
@@ -349,7 +349,7 @@ macro_rules! set {
 
 /// new a `BTreeSet<V>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2;
 /// btset![a, b]
@@ -381,7 +381,7 @@ macro_rules! btset {
 
 /// new a `BinaryHeap<V>`  
 /// ```
-/// # use batch_oper::*;
+/// # use libsugar::*;
 /// # use std::collections::*;
 /// # let a = 1; let b = 2;
 /// heap![a, b]

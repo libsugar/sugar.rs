@@ -3,7 +3,7 @@
 //! # Tuple example
 //!
 //! ```
-//! # use batch_oper::combin::*;
+//! # use libsugar::combin::*;
 //! let a: (i32, u8) = 1.with(2u8);
 //! assert_eq!(a, (1, 2));
 //! ```

@@ -1,10 +1,10 @@
 [package]
-name = "batch_oper"
-version = "2.3.0"
-authors = ["BatchOperator", "2A5F <u2a5f@outlook.com>"]
+name = "libsugar"
+version = "2.4.0"
+authors = ["libsugar", "2A5F <u2a5f@outlook.com>"]
 edition = "2018"
-description = "batch_oper provides some batch operation macro for some operations"
-repository = "https://github.com/BatchOperator/BatchOperRust"
+description = "libsugar provides syntactic sugar in the form of a library"
+repository = "https://github.com/libsugar/sugar.rs"
 license = "MIT"
 keywords = ["utils", "into", "let_chain", "tuple", "macro"]
 categories = ["rust-patterns", "no-std"]
@@ -16,7 +16,7 @@ readme = "README.md"
 tuples = { version = "1.4", optional = true }
 
 [features]
-default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuples", "once_get"]
+default = ["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuples", "once_get", "chain_drop"]
 std = []
 combin = []
 named-into = []
@@ -26,5 +26,6 @@ side-effect = []
 chain_panic = []
 chain_todo = []
 once_get = []
+chain_drop = []
 
 [build-dependencies]
