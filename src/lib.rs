@@ -2,7 +2,7 @@
 //! 
 //! ## Features
 //!
-//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuple_iter", "tuple_utils"]`  
+//! default = `["std", "combin", "named-into", "macro-lit", "side-effect", "re-exports", "chain_panic", "chain_todo", "tuples", "once_get", "chain_drop"]`  
 //!
 //! - `"std"` Enable std  
 //! - `"side-effect"` Enable mod [side_effect](side_effect/index.html)  
@@ -11,6 +11,7 @@
 //! - `"macro-lit"` Enable macro like [new](macro.new.html), [list](macro.list.html)  
 //! - `"chain_panic"` Enable mod [chain_panic](chain_panic/index.html)
 //! - `"chain_todo"` Enable mod [chain_todo](chain_todo/index.html)
+//! - `"chain_drop"` Enable mod [chain_drop](chain_drop/index.html)
 //! - `"tuples"` Enable mod [tuples](tuples/index.html)  
 //! - `"once_get"` Enable mod [once_get](once_get/index.html)  
 //! - `"re-exports"` Enable re-export of all mods  
