@@ -31,12 +31,12 @@ macro_rules! new {
 /// *equivalent to*
 /// ```
 /// # let a = 1; let b = 2; let c = 3;
-/// Box::new([a, b, c])
+/// vec![a, b, c].into_boxed_slice()
 /// # ;
 /// ```
 #[macro_export]
 macro_rules! arr {
-    [ $($e:expr),* $(,)? ] => { Box::new([$($e),*]) };
+    [ $($e:expr),* $(,)? ] => { vec![$($e),*].into_boxed_slice() };
 }
 
 /// new a `VecDeque<T>`
