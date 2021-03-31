@@ -4,7 +4,7 @@
 [![documentation](https://docs.rs/libsugar/badge.svg)](https://docs.rs/libsugar)
 ![LICENSE](https://img.shields.io/crates/l/libsugar)
 
-libsugar provides syntactic sugar in the form of a library  
+Like syntactic sugar, but is library  
 
 ## Features
 
