@@ -1,6 +1,6 @@
 [package]
 name = "libsugar"
-version = "2.4.1"
+version = "2.5.0"
 authors = ["libsugar", "2A5F <u2a5f@outlook.com>"]
 edition = "2018"
 description = "libsugar provides syntactic sugar in the form of a library"
